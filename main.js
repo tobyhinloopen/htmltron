@@ -4,8 +4,6 @@ var current_time;
 var player;
 
 function render() {
-  var x = (current_time % 500)/500*30;
-
   c2d.clearRect(0, 0, 640, 480);
 
   c2d.strokeStyle = "yellow";
@@ -18,7 +16,12 @@ function render() {
   c2d.stroke();
 
   c2d.fillStyle = "yellow";
-  c2d.fillRect(350 - x, 319, 7, 3);
+  var p = player.get_current_position();
+  if(player.direction % 2 == 1) {
+    c2d.fillRect(p.x - 3, p.y - 1, 7, 3);
+  } else {
+    c2d.fillRect(p.x - 1, p.y - 3, 3, 7);
+  }
 }
 
 function main() {
