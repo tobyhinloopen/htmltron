@@ -36,9 +36,9 @@ function main() {
 }
 
 function next(t) {
-  var delta = current_time == null ? 0 : (t - current_time) / 1000;
+  t = t/1000; // convert to seconds
   requestAnimationFrame(next);
-  player.update(delta);
+  player.update(current_time == null ? t : current_time, t);
   render();
   current_time = t;
 }
