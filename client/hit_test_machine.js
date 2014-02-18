@@ -33,7 +33,7 @@ HitTestMachine.prototype.add_path = function(p1, p2, player) {
   if(p1.x != p2.x && p1.y == p2.y) {
     this.horizontal_paths.push({ player: player, p1: { x: Math.min(p1.x, p2.x), y: p1.y }, p2: { x: Math.max(p1.x, p2.x), y: p1.y } });
   } else if(p1.y != p2.y && p1.x == p2.x) {
-    this.vertical_paths.push({ player: player, p1: { y: Math.min(p1.y, p2.y), x: p1.x }, p2: { y: Math.max(p1.y, p2.y), y: p1.x } });
+    this.vertical_paths.push({ player: player, p1: { y: Math.min(p1.y, p2.y), x: p1.x }, p2: { y: Math.max(p1.y, p2.y), x: p1.x } });
   } else if(p1.y != p2.y && p1.y != p2.y) {
     console.error("HitTestMachine can only handle vertical or horizontal lines...", p1, p2, player);
     throw new Error("Fatal error.");

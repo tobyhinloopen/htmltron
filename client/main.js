@@ -32,6 +32,7 @@ function render() {
 }
 
 function render_message() {
+  if(!current_message) return;
   c2d.font = "14px monospace";
   var text_width = c2d.measureText(current_message).width;
   var x = -text_width/2;
@@ -78,7 +79,8 @@ function find_match() {
 function controls_hint_callback() {
   if(show_controls_hint) {
     find_match();
-    update_message("Good. Now, get some practice while we find some other players...");
+		update_message("Good. Matchmaking should now occur, but is not implemented yet.");
+    // update_message("Good. Now, get some practice while we find some other players...");
     show_controls_hint = false;
   }
 }
@@ -88,8 +90,16 @@ function start() {
   hit_test_machine = new HitTestMachine();
   player = new Player();
   hit_test_machine.add_player(player);
+
+	var w = canvas.width;
+	var h = canvas.height;
+  hit_test_machine.add_path({ x:-w/2, y:-h/2 }, { x: w/2, y:-h/2 });
+  hit_test_machine.add_path({ x:-w/2, y:-h/2 }, { x:-w/2, y: h/2 });
+	hit_test_machine.add_path({ x: w/2, y:-h/2 }, { x: w/2, y: h/2 });
+  hit_test_machine.add_path({ x:-w/2, y: h/2 }, { x: w/2, y: h/2 });
+
   player.spawn({ x: 0, y: 240 });
-  player.color = "rgba(255,255,0,0.5);"
+  player.color = "yellow"
   Mousetrap.bind(["z", "left" ], function() { controls_hint_callback(); player.left();  }, "keydown");
   Mousetrap.bind(["x", "right"], function() { controls_hint_callback(); player.right(); }, "keydown");
   current_time = null;
