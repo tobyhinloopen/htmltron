@@ -1,20 +1,22 @@
-function HitTestMachine() {
+var Set = require("collections/set");
+
+var HitTestMachine = this.HitTestMachine = function() {
   this.horizontal_paths = [];
   this.vertical_paths = [];
-  this.players = [];
-  this.hit_players = [];
+  this.players = new Set();
+  this.hit_players = new Set();
   this.hits = [];
-}
+};
 
 HitTestMachine.prototype.pop_hits = function() {
-  this.hit_players.length = 0;
+  this.hit_players.clear();
   var hits = this.hits;
   this.hits = [];
   return hits;
 };
 
 HitTestMachine.prototype.add_player = function(player) {
-  this.players.push(player);
+  this.players.add(player);
   for(var i=0; i<player.path.length-1; i++) {
     this.add_path(player.path[i], player.path[i+1], player);
   }
@@ -27,6 +29,30 @@ HitTestMachine.prototype.add_player = function(player) {
   player.hittest_callback = function() {
     htm.gather_player_hits(player);
   };
+};
+
+HitTestMachine.prototype.remove_player = function(player) {
+  this.players.delete(player);
+  this.hit_players.delete(player);
+  var i;
+  for(i=0; i<this.hits.length; i++) {
+    if(this.hits[i].player == player || this.hits[i].other_player == player) {
+      this.hits.splice(i, 1);
+      i--;
+    }
+  }
+  for(i=0; i<this.horizontal_paths.length; i++) {
+    if(this.horizontal_paths[i].player == player) {
+      this.horizontal_paths.splice(i, 1);
+      i--;
+    }
+  }
+  for(i=0; i<this.vertical_paths.length; i++) {
+    if(this.vertical_paths[i].player == player) {
+      this.vertical_paths.splice(i, 1);
+      i--;
+    }
+  }
 };
 
 HitTestMachine.prototype.add_path = function(p1, p2, player) {
@@ -43,7 +69,7 @@ HitTestMachine.prototype.add_path = function(p1, p2, player) {
 };
 
 HitTestMachine.prototype.gather_player_hits = function(player) {
-  if(this.hit_players.indexOf(player) != -1) {
+  if(this.hit_players.contains(player)) {
     return true;
   }
   var p1 = player.path[player.path.length-2];
@@ -82,7 +108,7 @@ HitTestMachine.prototype.gather_player_hits = function(player) {
     if(!(player_movement_path.x == current_path.p1.x && player_movement_path.y == current_path.p1.y)
     && !(player_movement_path.x == current_path.p2.x && player_movement_path.y == current_path.p2.y)
     && HitTestMachine.is_intersecting_pair(current_path.p1, current_path.p2, p1, p2)) {
-      this.hit_players.push(player);
+      this.hit_players.add(player);
       this.hits.push({ player: player, other_player: current_path.player, intersection_coord: current_path.p1[intersection_property], intersection_property: intersection_property });
       return true;
     }
@@ -93,7 +119,7 @@ HitTestMachine.prototype.gather_player_hits = function(player) {
 
 HitTestMachine.prototype.gather_players_hits = function() {
   for(var i=0; i<this.players.length; i++) {
-    if(this.hit_players.indexOf(this.players[i]) == -1)
+    if(!this.hit_players.contains(this.players[i]))
       this.gather_player_hits(this.players[i]);
   }
 };

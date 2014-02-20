@@ -1,4 +1,4 @@
-function Player() {
+var Player = this.Player = function() {
   this.max_speed = 160;
   this.direction = 0;
   this.path = [];
@@ -7,9 +7,10 @@ function Player() {
   this.queue = [];
   this.color = "white";
 
+  this.game = null;
   this.path_listener;
   this.hittest_callback;
-}
+};
 
 Player.MOVEMENTS = [
   { x: 0, y:-1 }, // north
